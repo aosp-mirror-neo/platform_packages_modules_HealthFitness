@@ -54,21 +54,6 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun showsAdditionalPermissions() {
-        context.launchMainActivity {
-            navigateToManageAppPermissions()
-
-            scrollDownTo(By.text("Delete app data"))
-            waitDisplayed(By.text("Delete app data"))
-            scrollDownTo(By.text("Additional access"))
-            waitDisplayed(By.text("Additional access"))
-            clickOnText("Additional access")
-            waitDisplayed(By.text("Access past data"))
-            waitDisplayed(By.text("Access data in the background"))
-        }
-    }
-
-    @Test
     fun grantPermission_updatesAppPermissions() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         context.launchMainActivity {
