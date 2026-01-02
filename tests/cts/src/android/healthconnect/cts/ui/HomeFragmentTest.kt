@@ -20,6 +20,9 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
@@ -88,7 +91,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_openDataManagement() {
         context.launchMainActivity {
-            clickOnText("Data and access")
+            scrollDownToAndClick(By.text("Data and access"))
 
             waitDisplayed(By.text("Browse data"))
             waitDisplayed(By.text("Manage data"))
@@ -100,7 +103,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_openManageData() {
         context.launchMainActivity {
-            clickOnText("Manage data")
+            scrollDownToAndClick(By.text("Manage data"))
 
             waitDisplayed(By.text("Auto-delete"))
             waitDisplayed(By.text("Data sources and priority"))
@@ -111,7 +114,9 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     @Test
     fun homeFragment_recentAccessShownOnHomeScreen() {
         context.launchMainActivity {
+            scrollUpTo(By.textContains("CtsHealthConnectTest"))
             waitDisplayed(By.textContains("CtsHealthConnectTest"))
+            scrollDownTo(By.text("See all recent access"))
             waitDisplayed(By.text("See all recent access"))
         }
     }

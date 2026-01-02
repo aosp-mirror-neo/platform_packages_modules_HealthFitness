@@ -74,6 +74,10 @@ object UiTestUtils {
         }
     }
 
+    fun scrollUpTo(selector: BySelector) {
+        waitFindObject(By.scrollable(true)).scrollUntil(Direction.UP, Until.findObject(selector))
+    }
+
     fun scrollDownTo(selector: BySelector) {
         waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
     }

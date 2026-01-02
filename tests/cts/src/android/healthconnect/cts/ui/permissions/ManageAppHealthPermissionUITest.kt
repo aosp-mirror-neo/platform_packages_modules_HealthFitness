@@ -28,6 +28,7 @@ import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManage
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
@@ -59,7 +60,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchMainActivity {
             navigateToManageAppPermissions()
 
-            clickOnText("Body fat")
+            scrollDownToAndClick(By.text("Body fat"))
             clickOnContentDescription("Navigate up")
 
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
@@ -73,7 +74,7 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             navigateToManageAppPermissions()
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
 
-            clickOnText("Body fat")
+            scrollDownToAndClick(By.text("Body fat"))
             clickOnContentDescription("Navigate up")
 
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
@@ -125,8 +126,8 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     private fun navigateToManageAppPermissions() {
-        clickOnText("App permissions")
-        clickOnText("Health Connect cts test app")
+        scrollDownToAndClick(By.text("App permissions"))
+        scrollDownToAndClick(By.text("Health Connect cts test app"))
         waitDisplayed(By.text("Health Connect cts test app"))
         waitDisplayed(By.text("Allowed to read"))
     }

@@ -22,6 +22,7 @@ import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
@@ -97,6 +98,7 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
     fun permissionTypes_showsDeleteCategoryData() {
         context.launchDataActivity {
             clickOnText("Activity")
+            scrollDownTo(By.text("Delete activity data"))
             waitDisplayed(By.text("Delete activity data"))
         }
     }
