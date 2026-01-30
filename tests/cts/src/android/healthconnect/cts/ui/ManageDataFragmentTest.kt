@@ -19,6 +19,7 @@ package android.healthconnect.cts.ui
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.utils.TestUtils
 import androidx.test.uiautomator.By
 import org.junit.Test
@@ -43,7 +44,7 @@ class ManageDataFragmentTest : HealthConnectBaseTest() {
         TestUtils.setAutoDeletePeriod(0)
 
         context.launchMainActivity {
-            clickOnText("Manage data")
+            scrollDownToAndClick(By.text("Manage data"))
             UiTestUtils.waitDisplayed(By.text("Auto-delete"))
             UiTestUtils.waitDisplayed(By.text("Off"))
         }
@@ -54,7 +55,7 @@ class ManageDataFragmentTest : HealthConnectBaseTest() {
         TestUtils.setAutoDeletePeriod(THREE_MONTHS)
 
         context.launchMainActivity {
-            clickOnText("Manage data")
+            scrollDownToAndClick(By.text("Manage data"))
             UiTestUtils.waitDisplayed(By.text("Auto-delete"))
             UiTestUtils.waitDisplayed(By.text("After 3 months"))
         }

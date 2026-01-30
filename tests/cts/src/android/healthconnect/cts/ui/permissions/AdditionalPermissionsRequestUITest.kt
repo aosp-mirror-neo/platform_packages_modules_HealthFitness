@@ -27,6 +27,8 @@ import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
+import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.skipOnboardingIfAppears
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
@@ -162,10 +164,12 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
                 READ_HEALTH_DATA_IN_BACKGROUND)
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME, permissions = permissions) {
+                scrollUpTo(
+                    By.text("Allow Health Connect cts test app to access Health Connect?"))
                 waitDisplayed(
                     By.text("Allow Health Connect cts test app to access Health Connect?"))
-                clickOnText("Height")
-                clickOnText("Allow")
+                scrollDownToAndClick(By.text("Height"))
+                scrollDownToAndClick(By.text("Allow"))
 
                 waitDisplayed(By.text("Allow additional access for Health Connect cts test app?"))
                 clickOnText("Access past data")

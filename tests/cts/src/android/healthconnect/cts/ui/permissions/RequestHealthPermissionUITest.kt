@@ -23,6 +23,8 @@ import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
+import android.healthconnect.cts.lib.UiTestUtils.scrollUpTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitNotDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
@@ -49,9 +51,13 @@ class RequestHealthPermissionUITest : HealthConnectBaseTest() {
         context.launchRequestPermissionActivity(
             packageName = TEST_APP_PACKAGE_NAME,
             permissions = listOf(HealthPermissions.READ_HEIGHT, HealthPermissions.WRITE_BODY_FAT)) {
+                scrollUpTo(
+                    By.text("Allow Health Connect cts test app to access Health Connect?"))
                 waitDisplayed(
                     By.text("Allow Health Connect cts test app to access Health Connect?"))
+                scrollDownTo(By.text("Height"))
                 waitDisplayed(By.text("Height"))
+                scrollDownTo(By.text("Body fat"))
                 waitDisplayed(By.text("Body fat"))
             }
     }

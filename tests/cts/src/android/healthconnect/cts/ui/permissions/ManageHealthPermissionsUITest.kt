@@ -23,6 +23,7 @@ import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
@@ -99,7 +100,7 @@ class ManageHealthPermissionsUITest : HealthConnectBaseTest() {
     }
 
     private fun navigateToManagePermissions() {
-        clickOnText("App permissions")
+        scrollDownToAndClick(By.text("App permissions"))
         waitDisplayed(By.text("Allowed access"))
     }
 
