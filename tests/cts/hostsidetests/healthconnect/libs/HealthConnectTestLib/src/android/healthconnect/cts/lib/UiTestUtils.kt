@@ -41,7 +41,7 @@ object UiTestUtils {
 
     private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
-
+    private val FIND_OBJECT_TIMEOUT = Duration.ofMillis(500)
     private val TAG = UiTestUtils::class.java.simpleName
 
     private val TEST_DEVICE: Device =
@@ -79,7 +79,8 @@ object UiTestUtils {
     }
 
     fun scrollDownTo(selector: BySelector) {
-        waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
+        val scrollable = waitFindObjectOrNull(By.scrollable(true), FIND_OBJECT_TIMEOUT.toMillis())
+        scrollable?.scrollUntil(Direction.DOWN, Until.findObject(selector))
     }
 
     fun scrollDownToAndClick(selector: BySelector) {
