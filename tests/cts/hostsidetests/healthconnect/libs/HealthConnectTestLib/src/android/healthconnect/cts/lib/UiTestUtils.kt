@@ -27,7 +27,8 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.test.uiautomator.*
 import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
-import com.android.compatibility.common.util.UiAutomatorUtils2.*
+import com.android.compatibility.common.util.UiAutomatorUtils2
+import com.android.compatibility.common.util.UiDumpUtils
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeoutException
@@ -69,30 +70,68 @@ object UiTestUtils {
         uiObjectAction: (UiObject2) -> Unit = {}
     ) {
         waitFor("$selector to be displayed", waitTimeout) {
-            uiObjectAction(waitFindObject(selector, it.toMillis()))
+            uiObjectAction(UiAutomatorUtils2.waitFindObject(selector, it.toMillis()))
             true
         }
     }
 
-    fun scrollUpTo(selector: BySelector) {
-        waitFindObject(By.scrollable(true)).scrollUntil(Direction.UP, Until.findObject(selector))
+    /**
+     * Returns an object if it's visible on the screen or returns null otherwise.
+     *
+     * This method does _not_ scroll in an attempt to find the object.
+     */
+    private fun findObjectOrNull(
+        selector: BySelector,
+        timeout: Duration = FIND_OBJECT_TIMEOUT,
+    ): UiObject2? {
+        return UiAutomatorUtils2.getUiDevice().wait(Until.findObject(selector), timeout.toMillis())
     }
 
-    fun scrollDownTo(selector: BySelector) {
-        val scrollable = waitFindObjectOrNull(By.scrollable(true), FIND_OBJECT_TIMEOUT.toMillis())
-        scrollable?.scrollUntil(Direction.DOWN, Until.findObject(selector))
+    /**
+     * Returns an object if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findObject(selector: BySelector, timeout: Duration = FIND_OBJECT_TIMEOUT): UiObject2 {
+        return findObjectOrNull(selector, timeout)
+            ?: throw objectNotFoundExceptionWithDump("Object not found $selector")
     }
+
+    /**
+     * Clicks on an object if it's visible on the screen or throws otherwise.
+     *
+     * Use this if the object is expected to be visible on the screen without scrolling.
+     */
+    fun findObjectAndClick(selector: BySelector) {
+        findObject(selector).click()
+        UiAutomatorUtils2.getUiDevice().waitForIdle()
+    }
+
+    private fun scrollToDirection(selector: BySelector, direction: Direction) {
+        waitFor("scroll ${direction.name.lowercase()} to $selector", WAIT_TIMEOUT) {
+            if (findObjectOrNull(selector, Duration.ZERO) != null) {
+                return@waitFor true
+            }
+
+            val scrollable =
+                UiAutomatorUtils2.waitFindObjectOrNull(
+                    By.scrollable(true),
+                    FIND_OBJECT_TIMEOUT.toMillis(),
+                )
+
+            scrollable?.scrollUntil(direction, Until.findObject(selector))
+
+            findObjectOrNull(selector, Duration.ZERO) != null
+        }
+    }
+
+    fun scrollUpTo(selector: BySelector) = scrollToDirection(selector, Direction.UP)
+
+    fun scrollDownTo(selector: BySelector) = scrollToDirection(selector, Direction.DOWN)
 
     fun scrollDownToAndClick(selector: BySelector) {
-        try {
-            waitDisplayed(selector) { it.click() }
-        } catch (e: Exception) {
-            getUiDevice()
-                .findObject(By.scrollable(true))
-                .scrollUntil(Direction.DOWN, Until.findObject(selector))
-                .click()
-        }
-        getUiDevice().waitForIdle()
+        scrollDownTo(selector)
+        findObjectAndClick(selector)
     }
 
     fun skipOnboardingIfAppears() {
@@ -171,7 +210,7 @@ object UiTestUtils {
     /** Waits for the given [selector] not to be displayed. */
     fun waitNotDisplayed(selector: BySelector) {
         waitFor("$selector not to be displayed", NOT_DISPLAYED_TIMEOUT) {
-            waitFindObjectOrNull(selector, it.toMillis()) == null
+            UiAutomatorUtils2.waitFindObjectOrNull(selector, it.toMillis()) == null
         }
     }
 
@@ -218,7 +257,7 @@ object UiTestUtils {
     ) {
         val elapsedStartMillis = SystemClock.elapsedRealtime()
         while (true) {
-            getUiDevice().waitForIdle()
+            UiAutomatorUtils2.getUiDevice().waitForIdle()
             val durationSinceStart =
                 Duration.ofMillis(SystemClock.elapsedRealtime() - elapsedStartMillis)
             if (durationSinceStart >= uiAutomatorConditionTimeout) {
@@ -238,6 +277,10 @@ object UiTestUtils {
         }
 
         throw TimeoutException("Timed out waiting for $message")
+    }
+
+    private fun objectNotFoundExceptionWithDump(message: String): Exception {
+        return UiDumpUtils.wrapWithUiDump(UiObjectNotFoundException(message))
     }
 
     fun stepsRecordFromTestApp(): StepsRecord {
